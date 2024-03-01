@@ -6,9 +6,7 @@ import (
 	"net/http"
 )
 
-type HelloHandler struct{}
-
-func (h HelloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func helloHandler(w http.ResponseWriter, r *http.Request) {
 	// Error handler for 404
 	if r.URL.Path != "/hello" {
 		http.Error(w, "404 not found", http.StatusNotFound)
@@ -23,9 +21,7 @@ func (h HelloHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello!")
 }
 
-type FormHandler struct{}
-
-func (f FormHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func formHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		fmt.Fprintf(w, "Parse Form() err : %v", err)
 		return
@@ -43,8 +39,8 @@ func main() {
 	////////// Register Routes //////////
 	// handle function -> for route handling
 	http.Handle("/", fileServer)
-	http.Handle("/form", FormHandler{})
-	http.Handle("/hello", HelloHandler{})
+	http.HandleFunc("/form", formHandler)
+	http.HandleFunc("/hello", helloHandler)
 
 	fmt.Println("Server started at PORT 8080")
 	// Error Handling
